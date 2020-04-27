@@ -1,0 +1,99 @@
+{% extends "layout.html" %}
+{% load static from staticfiles %}
+{% load markdownify %}
+{% load blog_extras %}
+
+{% block title %}Search | {{ block.super }}{% endblock %}
+
+<!-- Page Header -->
+{% block page_header %}
+<div class="sv-page-header">
+    <div class="row align-center">
+        <div class="small-8 column">
+
+            {% with post_count=page.object_list|length %}
+                <form class="sv-search-form-lg" role="search" autocomplete="off" action="{% url "haystack_search" %}" method="GET">
+                    <div class="row align-middle">
+                        {% if query %}
+                            <div class="column shrink">
+                                <small class="sv-search-form-results">{{ post_count }} result{{ post_count|pluralize }} for:</small>
+                            </div>
+                            <div class="column">
+                                <input class="sv-search-input-lg" type="search" name="q" value="{{ query }}">
+                            </div>
+                        {% else %}
+                            <div class="column">
+                                <input class="sv-search-input-lg" type="search" name="q">
+                            </div>
+                        {% endif %}
+                        <div class="column shrink">
+                            <button class="sv-search-button-lg" type="submit">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            {% endwith %}
+
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block main %}
+
+<main class="sv-main sv-archive sv-right-padded">
+
+    {% if query %}
+        {% for result in page.object_list %}
+            <article class="sv-archive-single">
+
+                <div class="sv-article-header">
+                    <h2 class="sv-article-heading"><a href="{% url 'posts:detail' slug=result.object.slug %}">{{ result.object.title }}</a></h2>
+                    <div class="sv-article-meta">
+                        {% if result.object.topic.slug %}
+                            <span class="sv-article-topic">
+                                <a href="{% url 'posts:topic-post-list' slug=result.object.topic.slug %}">{{ result.object.topic.title|upper }}</a>
+                            </span>
+                            <span class="sv-article-sep">/</span>
+                        {% endif %}
+                        <span class="sv-article-date">{{ result.object.publish|date:"d.m.Y" }}</span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    {% if result.object.image %}
+                        <div class="column small-4">
+                            <img class="sv-article-image" src="{{ result.object.image.url }}" alt="">
+                        </div>
+                    {% endif %}
+                    <div class="column">
+                        <div class="sv-article-extract">
+                            {{ result.object.body|markdown|safe|truncatewords:result.object.truncate_words }}
+                            <a href="{% url 'posts:detail' slug=result.object.slug %}" class="sv-readmore">Read more</a>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        {% endfor %}
+
+        {% if page.has_previous or page.has_next %}
+            <div class="sv-pagination">
+                {% if page.has_previous %}
+                    <a href="?q={{ query }}&amp;page={{ page.previous_page_number }}" class="pagination-previous">
+                        <i class="fa fa-chevron-left"></i>
+                    </a>
+                {% endif %}
+                {% if page.has_next %}
+                    <a href="?q={{ query }}&amp;page={{ page.next_page_number }}">
+                        <i class="fa fa-chevron-right"></i>
+                    </a>
+                {% endif %}
+            </div>
+        {% endif %}
+
+    {% endif %}
+</main>
+
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% load blog_extras %}
+
+{% block title %}
+    {{ page_title }}
+{% endblock %}
+
+{% block main %}
+
+    <!-- List of Posts -->
+    {% post_archive %}
+
+{% endblock %}

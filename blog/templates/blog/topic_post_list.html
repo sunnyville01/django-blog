@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% load blog_extras %}
+{% load markdownify %}
+
+{% block title %}
+    {{ page_title }}
+{% endblock %}
+
+
+<!-- Page Header -->
+{% block page_header %}
+<div class="sv-page-header">
+    <div class="row align-center">
+        <div class="small-8 column">
+            <h1>{{ topic_title }} <small>- {{ count }} post{{ count|pluralize }}</small></h1>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block main %}
+
+    <!-- List of Posts -->
+    {% post_archive %}
+
+{% endblock %}

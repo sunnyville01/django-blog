@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+{% load markdownify %}
+{% load static from staticfiles %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block main %}
+    <main class="sv-main sv-single sv-right-padded">
+
+        <div class="sv-single-header">
+            <h1 class="sv-article-heading">{{ post.title }}</h1>
+            <div class="sv-article-meta">
+                {% if post.topic.slug %}
+                    <span class="sv-article-topic">
+                        <a href="{% url 'posts:topic-post-list' slug=post.topic.slug %}">{{ post.topic.title|upper }}</a>
+                    </span>
+                    <span class="sv-article-sep">/</span>
+                {% endif %}
+                <span class="sv-article-date">{{ post.publish|date:"d.m.Y" }}</span>
+            </div>
+        </div>
+
+        {% if post.image %}
+            <img class="sv-article-image" src="{{ post.image.url }}" alt="">
+        {% endif %}
+
+        <div class="sv-single-content">
+            {{ post.body | markdown | safe }}
+        </div>
+
+        <div class="sv-single-share">
+            <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ post.title }}" target="_blank" class="sv-share-twitter" title="Share on Twitter">
+                <i class="fa fa-twitter"></i>
+            </a>
+            <a href="https://www.facebook.com/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" class="sv-share-facebook" title="Share on Facebook">
+                <i class="fa fa-facebook"></i>
+            </a>
+            <a href="https://reddit.com/submit?url={{ request.build_absolute_uri }}&title={{ post.title }}" target="_blank" class="sv-share-reddit" title="Share on Reddit">
+                <i class="fa fa-reddit-alien"></i>
+            </a>
+        </div>
+    </main>
+{% endblock %}

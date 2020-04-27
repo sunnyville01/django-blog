@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block title %}Login | {{ block.super }}{% endblock %}
+
+
+{% block main %}
+
+<main class="sv-main sv-right-padded">
+    <h1>Login</h1>
+
+    <form method="POST">{% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit">
+    </form>
+</main>
+
+{% endblock %}
